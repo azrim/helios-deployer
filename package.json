@@ -6,7 +6,8 @@
     "deploy:token": "npx hardhat run scripts/deploy-token.js --network heliosTestnet",
     "deploy:contract": "npx hardhat run scripts/deploy-contract.js --network heliosTestnet",
     "deploy:nft": "npx hardhat run scripts/deploy-nft.js --network heliosTestnet",
-    "mint:nft": "npx hardhat run scripts/mint-nft.js --network heliosTestnet"
+    "mint:nft": "npx hardhat run scripts/mint-nft.js --network heliosTestnet",
+    "schedule:chronos": "node scripts/schedule-chronos.js"
 
   },
   "keywords": ["helios", "token", "hardhat", "deployment"],

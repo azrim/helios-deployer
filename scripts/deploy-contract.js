@@ -25,7 +25,15 @@ async function main() {
   console.log(`📦 Compiling and deploying: ${contractName}...`);
 
   const ContractFactory = await hre.ethers.getContractFactory(contractName);
-  const contract = await ContractFactory.deploy();
+  const args = [];
+  const constructor = ContractFactory.interface.deploy.inputs;
+
+  for (const input of constructor) {
+    const value = await prompt(`🧱 Enter value for ${input.name} (${input.type}): `);
+    args.push(value);
+  }
+
+  const contract = await ContractFactory.deploy(...args);
   const txHash = contract.deployTransaction.hash;
 
   await contract.deployed();
