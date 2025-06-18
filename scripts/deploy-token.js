@@ -23,10 +23,12 @@ async function main() {
 
   const Token = await ethers.getContractFactory("MyToken");
   const token = await Token.deploy(name, symbol, supply);
+  const txHash = token.deployTransaction.hash;
 
   await token.deployed();
 
   console.log(`✅ ${name} (${symbol}) deployed to: ${token.address}`);
+  console.log(`🔗 Explorer: https://explorer.helioschainlabs.org/tx/${txHash}`);
 }
 
 main().catch((err) => {

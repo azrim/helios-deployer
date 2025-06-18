@@ -1,5 +1,3 @@
-// scripts/deploy-contract.js
-
 const hre = require("hardhat");
 const readline = require("readline");
 
@@ -28,9 +26,12 @@ async function main() {
 
   const ContractFactory = await hre.ethers.getContractFactory(contractName);
   const contract = await ContractFactory.deploy();
+  const txHash = contract.deployTransaction.hash;
+
   await contract.deployed();
 
   console.log(`✅ ${contractName} deployed to: ${contract.address}`);
+  console.log(`🔗 Explorer: https://explorer.helioschainlabs.org/tx/${txHash}`);
 }
 
 main().catch((error) => {
