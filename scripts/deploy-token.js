@@ -1,21 +1,35 @@
 require("dotenv").config();
 const { ethers } = require("hardhat");
+const readline = require("readline");
+
+function ask(question) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  return new Promise((resolve) =>
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(answer);
+    })
+  );
+}
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
-
-  console.log("Deploying contract with address:", deployer.address);
+  const name = await ask("📛 Token name (e.g. Azrim Token): ");
+  const symbol = await ask("🔤 Token symbol (e.g. AZR): ");
+  const supplyRaw = await ask("💰 Initial supply (whole number): ");
+  const supply = ethers.utils.parseUnits(supplyRaw, 18);
 
   const Token = await ethers.getContractFactory("MyToken");
-  const initialSupply = ethers.utils.parseUnits("1000000", 18); // 1,000,000 AZR
-  const token = await Token.deploy(initialSupply);
+  const token = await Token.deploy(name, symbol, supply);
 
   await token.deployed();
 
-  console.log("AZR Token deployed to:", token.address);
+  console.log(`✅ ${name} (${symbol}) deployed to: ${token.address}`);
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
 });

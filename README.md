@@ -41,7 +41,6 @@ RPC_URL=helios_rpc_here
 
 ## 📦 Deploying Your Token (AZR)
 
-This deploys a 1 million supply ERC-20 token named `Azrim Token` with symbol `AZR`.
 
 ```bash
 npm run deploy:token
@@ -50,8 +49,10 @@ npm run deploy:token
 Output:
 
 ```
-Deploying contract with address: 0x...
-AZR Token deployed to: 0x...
+📛 Token name
+🔤 Token symbol
+💰 Initial supply (whole number): 1000000
+✅ Token deployed to: 0x
 ```
 
 ---
