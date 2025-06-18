@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Deploy AZR token and smart contracts to the Helios testnet.",
   "scripts": {
-    "deploy:token": "npx hardhat run scripts/deploy-token.js --network heliosTestnet"
+    "deploy:token": "npx hardhat run scripts/deploy-token.js --network heliosTestnet",
+    "deploy:contract": "npx hardhat run scripts/deploy-contract.js --network heliosTestnet"
   },
   "keywords": ["helios", "token", "hardhat", "deployment"],
   "author": "azrim89",

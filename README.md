@@ -56,22 +56,63 @@ AZR Token deployed to: 0x...
 
 ---
 
+## 📦 Deploying Any Smart Contract
+
+You can deploy any contract stored in the `contracts/` folder using the generic deployer script.
+
+### 🧾 Example
+
+For a contract like `contracts/HelloWorld.sol`:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
+
+contract HelloWorld {
+    string public greet = "Hello Helios!";
+}
+```
+
+### ▶️ Option 1: With prompt (interactive)
+
+```bash
+npm run deploy:contract
+```
+
+You'll be asked:
+
+```
+🔤 Enter contract name to deploy (without .sol): HelloWorld
+```
+
+### ▶️ Option 2: Set via environment variable
+
+```bash
+CONTRACT=HelloWorld npm run deploy:contract
+```
+
+> 🔒 No need to change the script for each contract — just update the name.
+
+---
+
 ## 📁 Project Structure
 
 ```
 helios-deployer/
 │
 ├── contracts/
-│   └── MyToken.sol       # ERC-20 token contract
+│   └── MyToken.sol          # ERC-20 token contract
+|   └── HelloWorld.sol       # Generic contract
 │
 ├── scripts/
-│   └── deploy-token.js   # Deployment script for AZR token
+│   └── deploy-token.js      # Deployment script for AZR token
+│   └── deploy-contract.js   # Deployment script for contract
 │
-├── .env                  # Private key + RPC config
-├── .gitignore            # Prevents .env and cache files from being tracked
-├── hardhat.config.js     # Hardhat configuration
-├── package.json          # Dependencies and scripts
-└── README.md             # You are here!
+├── .env                     # Private key + RPC config
+├── .gitignore               # Prevents .env and cache files from being tracked
+├── hardhat.config.js        # Hardhat configuration
+├── package.json             # Dependencies and scripts
+└── README.md                # You are here!
 ```
 
 ---
