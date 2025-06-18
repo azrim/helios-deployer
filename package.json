@@ -1,0 +1,19 @@
+{
+  "name": "helios-deployer",
+  "version": "1.0.0",
+  "description": "Deploy AZR token and smart contracts to the Helios testnet.",
+  "scripts": {
+    "deploy:token": "npx hardhat run scripts/deploy-token.js --network heliosTestnet"
+  },
+  "keywords": ["helios", "token", "hardhat", "deployment"],
+  "author": "azrim89",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2"
+  }
+}
