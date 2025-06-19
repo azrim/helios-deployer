@@ -26,6 +26,7 @@ async function main() {
   console.log("🚀 Minting NFT...");
 
   const receipt = await tx.wait();
+  const symbol = await nft.symbol();
   console.log(`✅ Minted NFT to ${recipient}`);
   console.log(`🔗 Explorer: https://explorer.helioschainlabs.org/tx/${receipt.transactionHash}`);
   await logDeployment(`NFTMint_${symbol}_${Date.now()}`, nft.address, tx.hash, tx);
