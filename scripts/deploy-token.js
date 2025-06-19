@@ -31,7 +31,7 @@ async function main() {
 
   console.log(`✅ ${name} (${symbol}) deployed to: ${token.address}`);
   console.log(`🔗 Explorer: https://explorer.helioschainlabs.org/tx/${txHash}`);
-  await logDeployment("AZRToken", token.address, tx.hash, tx);
+  await logDeployment(symbol, token.address, tx.hash, tx);
 }
 
 main().catch((err) => {
