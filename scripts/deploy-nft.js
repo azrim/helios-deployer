@@ -1,5 +1,6 @@
 const { ethers } = require("hardhat");
 const readline = require("readline");
+const { logDeployment } = require("./utils/logger");
 
 function ask(question) {
   const rl = readline.createInterface({
@@ -21,11 +22,13 @@ async function main() {
   const NFT = await ethers.getContractFactory("MyNFT");
   const nft = await NFT.deploy(name, symbol);
   const txHash = nft.deployTransaction.hash;
+  const tx = nft.deployTransaction;
 
   await nft.deployed();
 
   console.log(`✅ NFT contract ${name} (${symbol}) deployed to: ${nft.address}`);
   console.log(`🔗 Explorer: https://explorer.helioschainlabs.org/tx/${txHash}`);
+  await logDeployment(symbol, nft.address, tx.hash, tx);
 }
 
 main().catch((err) => {

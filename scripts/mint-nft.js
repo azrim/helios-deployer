@@ -1,5 +1,6 @@
 const hre = require("hardhat");
 const readline = require("readline");
+const { logDeployment } = require("./utils/logger");
 
 function ask(question) {
   const rl = readline.createInterface({
@@ -27,6 +28,7 @@ async function main() {
   const receipt = await tx.wait();
   console.log(`✅ Minted NFT to ${recipient}`);
   console.log(`🔗 Explorer: https://explorer.helioschainlabs.org/tx/${receipt.transactionHash}`);
+  await logDeployment(`NFTMint_${symbol}_${Date.now()}`, nft.address, tx.hash, tx);
 }
 
 main().catch((err) => {

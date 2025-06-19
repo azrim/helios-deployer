@@ -1,5 +1,6 @@
 const hre = require("hardhat");
 const readline = require("readline");
+const { logDeployment } = require("./utils/logger");
 
 async function prompt(question) {
   const rl = readline.createInterface({
@@ -35,11 +36,13 @@ async function main() {
 
   const contract = await ContractFactory.deploy(...args);
   const txHash = contract.deployTransaction.hash;
+  const tx = contract.deployTransaction;
 
   await contract.deployed();
 
   console.log(`✅ ${contractName} deployed to: ${contract.address}`);
   console.log(`🔗 Explorer: https://explorer.helioschainlabs.org/tx/${txHash}`);
+  await logDeployment(contractName, contract.address, txHash, contract.deployTransaction);
 }
 
 main().catch((error) => {

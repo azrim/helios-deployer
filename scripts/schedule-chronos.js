@@ -2,6 +2,7 @@ const { ethers } = require("hardhat");
 const fs = require("fs");
 const path = require("path");
 require("dotenv").config();
+const { logDeployment } = require("./utils/logger");
 
 const readline = require("readline");
 function ask(prompt) {
@@ -57,6 +58,7 @@ async function main() {
   } else {
     console.warn("⚠️ No logs emitted — Cron may not have been persisted.");
   }
+  await logDeployment(`CronTask_${selector}_${frequency}`, targetAddress, tx.hash, tx);
 }
 
 main().catch(console.error);
