@@ -12,8 +12,22 @@ contract MyNFT is ERC721, Ownable {
         Ownable(msg.sender)
     {}
 
+    /// @notice Mint a single NFT to `to`
     function safeMint(address to) public onlyOwner {
         _safeMint(to, _nextTokenId);
         _nextTokenId++;
+    }
+
+    /// @notice Mint `amount` NFTs to `to` in a loop
+    function mintBatch(address to, uint256 amount) public onlyOwner {
+        for (uint256 i = 0; i < amount; i++) {
+            _safeMint(to, _nextTokenId);
+            _nextTokenId++;
+        }
+    }
+
+    /// @notice Get total minted supply so far
+    function totalSupply() public view returns (uint256) {
+        return _nextTokenId;
     }
 }

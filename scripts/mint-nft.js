@@ -18,18 +18,35 @@ function ask(question) {
 async function main() {
   const contractAddress = await ask("🏛️ Enter deployed NFT contract address: ");
   const recipient = await ask("👤 Enter recipient wallet address: ");
+  const amountRaw = await ask("🔢 How many NFTs to mint?: ");
+  const amount = parseInt(amountRaw);
+
+  if (isNaN(amount) || amount <= 0) {
+    console.error("❌ Invalid amount entered.");
+    process.exit(1);
+  }
 
   const NFT = await hre.ethers.getContractFactory("MyNFT");
   const nft = await NFT.attach(contractAddress);
+  const symbol = await nft.symbol();
 
-  const tx = await nft.safeMint(recipient);
-  console.log("🚀 Minting NFT...");
+  let tx;
+
+  if (amount === 1) {
+    tx = await nft.safeMint(recipient);
+  } else {
+    tx = await nft.mintBatch(recipient, amount);
+  }
 
   const receipt = await tx.wait();
-  const symbol = await nft.symbol();
-  console.log(`✅ Minted NFT to ${recipient}`);
-  console.log(`🔗 Explorer: https://explorer.helioschainlabs.org/tx/${receipt.transactionHash}`);
-  await logDeployment(`NFTMint_${symbol}_${Date.now()}`, nft.address, tx.hash, tx);
+
+  console.log(`✅ Minted ${amount} NFT${amount > 1 ? "s" : ""} to ${recipient}`);
+  console.log(`🔗 Explorer: https://explorer.helioschainlabs.org/tx/${tx.hash}`);
+
+  await logDeployment(`NFTMint_${symbol}_${Date.now()}`, nft.address, tx.hash, tx, {
+    mintAmount: amount,
+    recipient
+  });
 }
 
 main().catch((err) => {

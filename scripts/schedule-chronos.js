@@ -23,26 +23,39 @@ async function main() {
 
   const targetAddress = await ask("🎯 Target contract address: ");
   const contractName = await ask("📄 Contract name (e.g. ChronosController): ");
-  const selector = await ask("🔧 Function name (e.g. autoMint): ");
+  const selectorBase = await ask("🔧 Function name (e.g. autoMint): ");
+  const mintAmountRaw = await ask("🔢 How many NFTs per cron execution?: ");
   const frequency = await ask("⏱️ Frequency in blocks (e.g. 180): ");
   const deposit = await ask("💰 Deposit (e.g. 1 for 1 HLS): ");
+  const mintAmount = parseInt(mintAmountRaw);
 
-  // ✅ Load full compiled ABI of the target contract
+  if (isNaN(mintAmount) || mintAmount <= 0) {
+    console.error("❌ Invalid mint amount.");
+    process.exit(1);
+  }
+
   const artifactPath = path.join(
     __dirname,
     `../artifacts/contracts/${contractName}.sol/${contractName}.json`
   );
-
   const contractArtifact = JSON.parse(fs.readFileSync(artifactPath, "utf-8"));
-  const fullAbiJson = JSON.stringify(contractArtifact.abi);
+  const contractInterface = new ethers.utils.Interface(contractArtifact.abi);
+
+  // Choose function signature based on whether amount is 1 or more
+  const fullSelectorName = mintAmount === 1
+    ? `${selectorBase}()`
+    : `${selectorBase}(uint256)`;
+  const args = mintAmount === 1 ? [] : [mintAmount];
+
+  const selector = contractInterface.getSighash(fullSelectorName);
 
   const tx = await chronos.createCron(
     targetAddress,
-    fullAbiJson,
-    selector,
-    [],
+    JSON.stringify(contractArtifact.abi),
+    selectorBase, // name without types
+    args,
     parseInt(frequency),
-    0, // no expiration
+    0,
     400_000,
     ethers.utils.parseUnits("2", "gwei"),
     ethers.utils.parseEther(deposit),
@@ -58,7 +71,12 @@ async function main() {
   } else {
     console.warn("⚠️ No logs emitted — Cron may not have been persisted.");
   }
-  await logDeployment(`CronTask_${selector}_${frequency}`, targetAddress, tx.hash, tx);
+
+  await logDeployment(`CronTask_${selectorBase}_${frequency}`, targetAddress, tx.hash, tx, {
+    mintAmount,
+    interval: frequency,
+    selector
+  });
 }
 
 main().catch(console.error);

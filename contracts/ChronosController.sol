@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 interface IMyNFT {
     function safeMint(address to) external;
+    function mintBatch(address to, uint256 amount) external;
 }
 
 contract ChronosController {
@@ -14,11 +15,11 @@ contract ChronosController {
         recipient = _recipient;
     }
 
-    function autoMint() external {
-        IMyNFT(nft).safeMint(recipient);
-    }
-
-    function updateRecipient(address newRecipient) external {
-        recipient = newRecipient;
+    function autoMint(uint256 amount) external {
+        if (amount == 1) {
+            IMyNFT(nft).safeMint(recipient); // ✅ Cast correctly
+        } else {
+            IMyNFT(nft).mintBatch(recipient, amount); // ✅ Optional
+        }
     }
 }
