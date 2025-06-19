@@ -12,15 +12,6 @@ function saveLog(data) {
   fs.writeFileSync(logFile, JSON.stringify(data, null, 2));
 }
 
-function detectCommand() {
-  if (process.env.npm_lifecycle_event) return process.env.npm_lifecycle_event;
-  if (process.argv.length > 1) {
-    const scriptName = process.argv[1].split("/").pop();
-    if (scriptName) return scriptName.replace(".js", "");
-  }
-  return "unknown";
-}
-
 async function logDeployment(name, address, txHash, tx) {
   const data = loadLog();
   const explorer = `https://explorer.helioschainlabs.org/tx/${txHash}`;
@@ -33,8 +24,7 @@ async function logDeployment(name, address, txHash, tx) {
     tx: txHash,
     explorer,
     blockNumber,
-    timestamp,
-    command: detectCommand()
+    timestamp
   };
 
   saveLog(data);
