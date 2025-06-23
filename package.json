@@ -1,17 +1,22 @@
 {
   "name": "helios-deployer",
-  "version": "1.0.0",
-  "description": "Deploy AZR token and smart contracts to the Helios testnet.",
+  "version": "1.1.0",
+  "description": "Deploy and interact with smart contracts on the Helios testnet.",
   "scripts": {
     "clear:deployments": "node scripts/clear-deployments.js",
-    "deploy:token": "npx hardhat run scripts/deploy-token.js --network heliosTestnet",
-    "deploy:contract": "npx hardhat run scripts/deploy-contract.js --network heliosTestnet",
-    "deploy:nft": "npx hardhat run scripts/deploy-nft.js --network heliosTestnet",
-    "mint:nft": "npx hardhat run scripts/mint-nft.js --network heliosTestnet",
+    "deploy": "npx hardhat run scripts/deploy.js --network heliosTestnet",
+    "interact": "npx hardhat run scripts/interact.js --network heliosTestnet",
     "schedule:chronos": "node scripts/schedule-chronos.js"
-
   },
-  "keywords": ["helios", "token", "hardhat", "deployment"],
+  "keywords": [
+    "helios",
+    "token",
+    "hardhat",
+    "deployment",
+    "smart-contracts",
+    "ai",
+    "cron"
+  ],
   "author": "azrim89",
   "license": "MIT",
   "devDependencies": {

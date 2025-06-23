@@ -1,0 +1,63 @@
+{
+  "deployerWallet": "0xe0becc917ec26961bf40ad87650ec0878daf950d",
+  "treasuryWallet": "0xe0becc917ec26961bf40ad87650ec0878daf950d",
+  "contracts": [
+    {
+      "name": "MyToken",
+      "args": ["My Random Token", "MRT", "1000000000000000000000000", "deployerWallet"],
+      "logName": "RandomToken"
+    },
+    {
+      "name": "MyNFT",
+      "args": ["My Random NFT", "MRN"],
+      "logName": "RandomNFT",
+      "interactions": [
+        {
+          "type": "mint",
+          "recipient": "deployerWallet",
+          "amount": 5
+        }
+      ]
+    },
+    {
+      "name": "FeeCollector",
+      "args": ["deployerWallet", "treasuryWallet"],
+      "logName": "FeeCollector",
+      "interactions": [
+        {
+          "type": "chronos",
+          "functionName": "sendFeesToTreasury",
+          "args": [],
+          "frequency": 100,
+          "deposit": "0.1"
+        }
+      ]
+    },
+    {
+      "name": "DailyReporter",
+      "args": ["deployerWallet"],
+      "logName": "DailyReporter",
+      "interactions": [
+        {
+          "type": "chronos",
+          "functionName": "createDailyReport",
+          "args": ["System check OK at timestamp."],
+          "frequency": 120,
+          "deposit": "0.1"
+        }
+      ]
+    },
+    {
+      "name": "AIAgent",
+      "args": ["deployerWallet"],
+      "logName": "AIAgent",
+      "interactions": [
+        {
+          "type": "call",
+          "functionName": "askAI",
+          "args": ["llama3", "Give me a random fact about space."]
+        }
+      ]
+    }
+  ]
+}
