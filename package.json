@@ -3,7 +3,7 @@
   "version": "1.4.0",
   "description": "Deploy and interact with smart contracts on the Helios testnet.",
   "scripts": {
-    "clear:deployments": "node scripts/clear-deployments.js",
+    "cleanup": "node scripts/clear-deployments.js",
     "deploy": "npx hardhat run scripts/deploy.js --network heliosTestnet",
     "deploy:token": "CONTRACT_LOG_NAME=RandomToken npx hardhat run scripts/deploy.js --network heliosTestnet",
     "deploy:nft": "CONTRACT_LOG_NAME=RandomNFT npx hardhat run scripts/deploy.js --network heliosTestnet",
