@@ -1,11 +1,16 @@
 {
   "name": "helios-deployer",
-  "version": "1.1.0",
+  "version": "1.4.0",
   "description": "Deploy and interact with smart contracts on the Helios testnet.",
   "scripts": {
     "clear:deployments": "node scripts/clear-deployments.js",
     "deploy": "npx hardhat run scripts/deploy.js --network heliosTestnet",
-    "interact": "npx hardhat run scripts/interact.js --network heliosTestnet",
+    "deploy:token": "CONTRACT_LOG_NAME=RandomToken npx hardhat run scripts/deploy.js --network heliosTestnet",
+    "deploy:nft": "CONTRACT_LOG_NAME=RandomNFT npx hardhat run scripts/deploy.js --network heliosTestnet",
+    "deploy:agent": "CONTRACT_LOG_NAME=AIAgent npx hardhat run scripts/deploy.js --network heliosTestnet",
+    "deploy:fee": "CONTRACT_LOG_NAME=FeeCollector npx hardhat run scripts/deploy.js --network heliosTestnet",
+    "deploy:reporter": "CONTRACT_LOG_NAME=DailyReporter npx hardhat run scripts/deploy.js --network heliosTestnet",
+    "interact": "npx hardhat run scripts/scripts/interact.js --network heliosTestnet",
     "schedule:chronos": "node scripts/schedule-chronos.js"
   },
   "keywords": [
@@ -21,6 +26,7 @@
   "license": "MIT",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "hardhat": "^2.22.0"
   },

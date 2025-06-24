@@ -55,7 +55,9 @@
         {
           "type": "call",
           "functionName": "askAI",
-          "args": ["llama3", "Give me a random fact about space."]
+          "args": ["gemma-7b", "Give me a random fact about space."],
+          "value": "0.01",
+          "gasLimit": 1000000
         }
       ]
     }
