@@ -23,6 +23,7 @@ function generateAndLoadConfig(hre) {
     const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     const randomChoice = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
+    console.log("   -> Randomizing contract arguments...");
     template.contracts.forEach(contractConfig => {
         if (contractConfig.logName === "RandomToken") {
             const theme = randomChoice(tokenThemes);
@@ -30,6 +31,7 @@ function generateAndLoadConfig(hre) {
             contractConfig.args[1] = theme.substring(0, 3).toUpperCase();
             const randomSupply = randomInt(1000000, 1000000000);
             contractConfig.args[2] = hre.ethers.utils.parseUnits(randomSupply.toString(), 18).toString();
+            console.log(`       - Token Name: '${contractConfig.args[0]}', Symbol: '${contractConfig.args[1]}', Supply: ${randomSupply}`);
         }
         if (contractConfig.logName === "RandomNFT") {
             const theme = randomChoice(nftThemes);
@@ -38,6 +40,7 @@ function generateAndLoadConfig(hre) {
             contractConfig.args[1] = theme.substring(0, 4).toUpperCase();
             if (contractConfig.interactions[0] && contractConfig.interactions[0].type === "mint") {
                 contractConfig.interactions[0].amount = randomInt(1, 3);
+                console.log(`       - NFT Name: '${contractConfig.args[0]}', Symbol: '${contractConfig.args[1]}', Mint Amount: ${contractConfig.interactions[0].amount}`);
             }
         }
         if (contractConfig.logName === "AIAgent") {
@@ -45,6 +48,7 @@ function generateAndLoadConfig(hre) {
                 const prompts = JSON.parse(fs.readFileSync(promptsPath, "utf-8"));
                 if (contractConfig.interactions[0]) {
                    contractConfig.interactions[0].args[1] = randomChoice(prompts);
+                   console.log(`       - AI Prompt: "${contractConfig.interactions[0].args[1]}"`);
                 }
             }
         }
