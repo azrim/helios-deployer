@@ -110,7 +110,16 @@ async function main() {
             await contract.deployed();
 
             console.log(`✅ ${contractConfig.name} deployed to: ${contract.address}`);
-            await logDeployment(contractConfig.logName, contract.address, contract.deployTransaction.hash, contract.deployTransaction);
+            
+            // --- UPDATED LOGIC ---
+            // Use the dynamic name for tokens/NFTs, otherwise use the static logName.
+            let logKey = contractConfig.logName;
+            if (contractConfig.logName === "RandomToken" || contractConfig.logName === "RandomNFT") {
+                logKey = constructorArgs[0]; // The first constructor argument is the dynamic name.
+            }
+            // --- END UPDATED LOGIC ---
+
+            await logDeployment(logKey, contract.address, contract.deployTransaction.hash, contract.deployTransaction);
             deployedContracts[contractConfig.name] = contract;
         } catch (error) {
             console.error(`❌ Failed to deploy ${contractConfig.name}:`, error.message);
@@ -158,7 +167,6 @@ async function main() {
                     
                     console.log(`   ✅ Transaction confirmed! Hash: ${tx.hash}`);
 
-                    // --- NEW: Event Parsing Logic ---
                     const responseEvent = receipt.events?.find(e => e.event === 'AIResponse');
                     const errorEvent = receipt.events?.find(e => e.event === 'AIError');
 
@@ -167,13 +175,11 @@ async function main() {
                         console.log(`      - Response: ${responseEvent.args.response}`);
                     } else if (errorEvent) {
                         console.error("\n   ❌ AI Interaction Failed. The precompile returned an error:");
-                        // The revert reason is returned as bytes, so we need to decode it.
                         const reason = hre.ethers.utils.toUtf8String(errorEvent.args.reason);
                         console.error(`      - Revert Reason: ${reason}`);
                     } else {
                         console.warn("\n   ⚠️ No AIResponse or AIError event was detected.");
                     }
-                    // --- END NEW Logic ---
 
                 } else if (interaction.type === "chronos") {
                     console.log(`   -> Scheduling CRON for '${interaction.functionName}'...`);
