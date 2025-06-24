@@ -39,7 +39,7 @@ function generateAndLoadConfig(hre) {
             contractConfig.args[0] = `${theme} ${qualifier}`;
             contractConfig.args[1] = theme.substring(0, 4).toUpperCase();
             if (contractConfig.interactions[0] && contractConfig.interactions[0].type === "mint") {
-                contractConfig.interactions[0].amount = randomInt(1, 3);
+                contractConfig.interactions[0].amount = 1; // Changed to fixed value of 1
                 console.log(`       - NFT Name: '${contractConfig.args[0]}', Symbol: '${contractConfig.args[1]}', Mint Amount: ${contractConfig.interactions[0].amount}`);
             }
         }
