@@ -4,4 +4,4 @@ artifacts
 cache
 deployments.json
 deployment-config.json
-verify
+verification

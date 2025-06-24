@@ -115,15 +115,20 @@ async function main() {
 
             console.log(`✅ ${contractConfig.name} deployed to: ${contract.address}`);
             
-            // --- UPDATED LOGIC ---
-            // Use the dynamic name for tokens/NFTs, otherwise use the static logName.
             let logKey = contractConfig.logName;
             if (contractConfig.logName === "RandomToken" || contractConfig.logName === "RandomNFT") {
-                logKey = constructorArgs[0]; // The first constructor argument is the dynamic name.
+                logKey = constructorArgs[0];
             }
-            // --- END UPDATED LOGIC ---
+            
+            // --- FIX ---
+            // Pass the original logName AND the resolved constructor args in the extraData object.
+            const extraData = { 
+                logName: contractConfig.logName,
+                constructorArgs: constructorArgs
+            };
+            await logDeployment(logKey, contract.address, contract.deployTransaction.hash, contract.deployTransaction, extraData);
+            // --- END FIX ---
 
-            await logDeployment(logKey, contract.address, contract.deployTransaction.hash, contract.deployTransaction);
             deployedContracts[contractConfig.name] = contract;
         } catch (error) {
             console.error(`❌ Failed to deploy ${contractConfig.name}:`, error.message);
