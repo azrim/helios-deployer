@@ -63,9 +63,15 @@
     },
     {
       "name": "HyperionQuery",
-      "args": ["latest_block", "deployerWallet"],
+      "args": [],
       "logName": "HyperionQuery",
-      "interactions": []
+      "interactions": [
+        {
+            "type": "call",
+            "functionName": "performStructuredQuery",
+            "args": ["v2/history/get_actions", "{\"account\":\"helios.voter\"}"]
+        }
+      ]
     }
   ]
 }

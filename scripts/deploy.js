@@ -53,12 +53,10 @@ function generateAndLoadConfig(hre) {
             }
         }
         if (contractConfig.logName === "HyperionQuery") {
-            // Randomize which query function to call for interaction
+            // Randomize which valid query function to call
             const interactions = [
-                { type: "call", functionName: "performQuery", args: ["some_random_string_" + randomInt(1, 1000)] },
-                { type: "call", functionName: "getLatestBlock", args: [randomChoice(["finalized", "pending", "latest"])] },
-                { type: "call", functionName: "getAccountHistory", args: ["deployerWallet", randomInt(1, 100)] },
-                { type: "call", functionName: "setConfiguration", args: ["new_type_" + randomInt(1, 100), "new_param_" + randomInt(1, 100)] }
+                { type: "call", functionName: "performStructuredQuery", args: ["v2/history/get_actions", `{"account":"user.${randomInt(1000,9999)}"}`] },
+                // The performRawQuery function is a view and won't emit events, so we'll stick to the structured query for automated interaction logging
             ];
             contractConfig.interactions = [randomChoice(interactions)];
              console.log(`       - Hyperion Interaction: ${contractConfig.interactions[0].functionName} with args [${contractConfig.interactions[0].args.join(', ')}]`);
@@ -184,20 +182,16 @@ async function main() {
                     
                     console.log(`   ✅ Transaction confirmed! Hash: ${tx.hash}`);
 
-                    const responseEvent = receipt.events?.find(e => e.event === 'AIResponse');
+                    const responseEvent = receipt.events?.find(e => e.event === 'AIResponse' || e.event === 'HyperionResponse');
                     const errorEvent = receipt.events?.find(e => e.event === 'AIError');
-                    const queryEvent = receipt.events?.find(e => e.event?.startsWith('Query') || e.event?.startsWith('Configuration'));
-                    
 
                     if (responseEvent) {
-                        console.log("\n   🔔 AI Response Received:");
-                        console.log(`      - Response: ${responseEvent.args.response}`);
+                        console.log(`\n   🔔 ${responseEvent.event} Received:`);
+                        console.log(`      - Result: ${responseEvent.args[0]}`);
                     } else if (errorEvent) {
-                        console.error("\n   ❌ AI Interaction Failed. The precompile returned an error:");
+                        console.error("\n   ❌ Interaction Failed. The precompile returned an error:");
                         const reason = hre.ethers.utils.toUtf8String(errorEvent.args.reason);
                         console.error(`      - Revert Reason: ${reason}`);
-                    } else if (queryEvent) {
-                         console.log(`\n   🔔 ${queryEvent.event} event detected.`);
                     } else {
                         console.warn("\n   ⚠️ No specific event detected for this interaction.");
                     }
