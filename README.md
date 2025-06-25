@@ -1,5 +1,7 @@
 # Helios Automated Deployer & Interaction Suite
 
+![Visitor Count](https://api.visitorbadge.io/api/VisitorHit?user=azrim&repo=helios-deployer&countColor=%237B1E7A)
+
 This repository provides a powerful and flexible suite of tools for deploying and interacting with smart contracts on the **Helios Network**. It leverages a configuration-driven approach to automate the deployment of multiple contracts, including ERC20 tokens, ERC721 NFTs, and contracts that integrate with Helios's native AI and Chronos (cron job) precompiles.
 
 The system is designed for rapid iteration and testing, with features like randomized contract parameters, selective deployments, and an automated contract verification helper to streamline your development workflow.
