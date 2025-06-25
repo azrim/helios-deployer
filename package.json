@@ -10,6 +10,7 @@
     "deploy:agent": "CONTRACT_LOG_NAME=AIAgent npx hardhat run scripts/deploy.js --network heliosTestnet",
     "deploy:fee": "CONTRACT_LOG_NAME=FeeCollector npx hardhat run scripts/deploy.js --network heliosTestnet",
     "deploy:reporter": "CONTRACT_LOG_NAME=DailyReporter npx hardhat run scripts/deploy.js --network heliosTestnet",
+    "deploy:hyperion": "CONTRACT_LOG_NAME=HyperionQuery npx hardhat run scripts/deploy.js --network heliosTestnet",
     "interact": "npx hardhat run scripts/scripts/interact.js --network heliosTestnet",
     "schedule:chronos": "node scripts/schedule-chronos.js",
     "verify:prepare": "node scripts/prepare-verification.js"

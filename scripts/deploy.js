@@ -18,12 +18,12 @@ function generateAndLoadConfig(hre) {
 
     const tokenThemes = ["Relic", "Cypher", "Aura", "Vault", "Echo", "Flux", "Chrono", "Quantum", "Sage", "Magic", "Starlight", "Voidstone", "Helios", "Nova", "Rune", "Ghost", "Zenith", "Oracle", "Pulse", "Warp", "Astral", "Solaris", "Lunar", "Gale", "Ember", "Frost", "Terra", "Titan"];
     const nftThemes = ["Relics", "Cyphers", "Circuits", "Spirits", "Glyphs", "Echoes", "Shards", "Archives", "Dynasty", "Raze", "Chronicles", "Fragments", "Realms", "Visions", "Celestials", "Titans", "Warlords", "Ghosts", "Dragons", "Kings", "Empires", "Odysseys", "Legends", "Myths", "Prophecies", "Guardians"];
-    const nftQualifiers = ["of Power", "of the Void", "of Light", "of the Ancients", "of the Future", "of Elysium", "of the Cosmos", "of the Abyss", "of Destiny", "of the Forgotten", "of Helios", "of the North", "of the Rising Sun", "of Eternal Night", "of the Crimson Dawn", "of the Azure Sky"];
-
+    const nftQualifiers = ["of Power", "of the Void", "of Light", "of the Ancients", "of the Future", "of Elysium", "of the Cosmos", "of the Abyss", "of Destiny", "of the Forgotten", "of Helios", "of the North", "of the Rising Sun", "of an Eternal Night", "of the Crimson Dawn", "of the Azure Sky"];
+    
     const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     const randomChoice = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-    console.log("   -> Randomizing contract arguments...");
+    console.log("   -> Randomizing contract arguments and interactions...");
     template.contracts.forEach(contractConfig => {
         if (contractConfig.logName === "RandomToken") {
             const theme = randomChoice(tokenThemes);
@@ -51,6 +51,17 @@ function generateAndLoadConfig(hre) {
                    console.log(`       - AI Prompt: "${contractConfig.interactions[0].args[1]}"`);
                 }
             }
+        }
+        if (contractConfig.logName === "HyperionQuery") {
+            // Randomize which query function to call for interaction
+            const interactions = [
+                { type: "call", functionName: "performQuery", args: ["some_random_string_" + randomInt(1, 1000)] },
+                { type: "call", functionName: "getLatestBlock", args: [randomChoice(["finalized", "pending", "latest"])] },
+                { type: "call", functionName: "getAccountHistory", args: ["deployerWallet", randomInt(1, 100)] },
+                { type: "call", functionName: "setConfiguration", args: ["new_type_" + randomInt(1, 100), "new_param_" + randomInt(1, 100)] }
+            ];
+            contractConfig.interactions = [randomChoice(interactions)];
+             console.log(`       - Hyperion Interaction: ${contractConfig.interactions[0].functionName} with args [${contractConfig.interactions[0].args.join(', ')}]`);
         }
     });
 
@@ -120,18 +131,15 @@ async function main() {
                 logKey = constructorArgs[0];
             }
             
-            // --- FIX ---
-            // Pass the original logName AND the resolved constructor args in the extraData object.
             const extraData = { 
                 logName: contractConfig.logName,
                 constructorArgs: constructorArgs
             };
             await logDeployment(logKey, contract.address, contract.deployTransaction.hash, contract.deployTransaction, extraData);
-            // --- END FIX ---
 
             deployedContracts[contractConfig.name] = contract;
         } catch (error) {
-            console.error(`❌ Failed to deploy ${contractConfig.name}:`, error.message);
+            console.error(`❌ Failed to deploy ${contractConfig.name}:`, error);
             process.exit(1);
         }
     }
@@ -178,6 +186,8 @@ async function main() {
 
                     const responseEvent = receipt.events?.find(e => e.event === 'AIResponse');
                     const errorEvent = receipt.events?.find(e => e.event === 'AIError');
+                    const queryEvent = receipt.events?.find(e => e.event?.startsWith('Query') || e.event?.startsWith('Configuration'));
+                    
 
                     if (responseEvent) {
                         console.log("\n   🔔 AI Response Received:");
@@ -186,8 +196,10 @@ async function main() {
                         console.error("\n   ❌ AI Interaction Failed. The precompile returned an error:");
                         const reason = hre.ethers.utils.toUtf8String(errorEvent.args.reason);
                         console.error(`      - Revert Reason: ${reason}`);
+                    } else if (queryEvent) {
+                         console.log(`\n   🔔 ${queryEvent.event} event detected.`);
                     } else {
-                        console.warn("\n   ⚠️ No AIResponse or AIError event was detected.");
+                        console.warn("\n   ⚠️ No specific event detected for this interaction.");
                     }
 
                 } else if (interaction.type === "chronos") {

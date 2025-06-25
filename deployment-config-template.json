@@ -60,6 +60,12 @@
           "gasLimit": 1000000
         }
       ]
+    },
+    {
+      "name": "HyperionQuery",
+      "args": ["latest_block", "deployerWallet"],
+      "logName": "HyperionQuery",
+      "interactions": []
     }
   ]
 }
