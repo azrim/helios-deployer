@@ -72,6 +72,20 @@
             "args": ["v2/history/get_actions", "{\"account\":\"helios.voter\"}"]
         }
       ]
+    },
+    {
+      "name": "Heartbeat",
+      "args": ["deployerWallet"],
+      "logName": "Heartbeat",
+      "interactions": [
+        {
+          "type": "chronos",
+          "functionName": "sendPing",
+          "args": [],
+          "frequency": 100,
+          "deposit": "0.1"
+        }
+      ]
     }
   ]
 }
