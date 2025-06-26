@@ -1,5 +1,5 @@
 const { exec } = require('child_process');
-const fs = 'fs';
+const fs = require('fs'); // Correctly import the 'fs' module
 const path = require('path');
 
 // --- Configuration ---
@@ -9,7 +9,7 @@ const CHRONOS_CONTRACTS = [
     { logName: 'DailyReporter', requiredCount: 2 }
 ];
 
-// All available contracts for random deployment (excluding the specially handled ones)
+// All available contracts for random deployment
 const ALL_CONTRACT_LOG_NAMES = [
     'RandomToken', 'RandomNFT', 'AIAgent', 'HyperionQuery', 'Heartbeat',
     'FeeCollector', 'DailyReporter' 
@@ -43,6 +43,7 @@ function getDeploymentsFromLast24Hours() {
     const twentyFourHoursAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
 
     return Object.values(deployments).filter(dep => {
+        if (!dep.timestamp) return false;
         const deploymentDate = new Date(dep.timestamp);
         return deploymentDate > twentyFourHoursAgo;
     });
