@@ -31,7 +31,13 @@ function loadLog() {
  */
 function saveLog(data) {
     try {
-        fs.writeFileSync(logFile, JSON.stringify(data, null, 2));
+        // This replacer function tells JSON.stringify how to handle BigInts
+        const replacer = (key, value) =>
+            typeof value === 'bigint'
+                ? value.toString()
+                : value; // return everything else unchanged
+
+        fs.writeFileSync(logFile, JSON.stringify(data, replacer, 2));
     } catch (error) {
         console.error("❌ Error writing to deployments.json:", error);
     }
@@ -43,9 +49,10 @@ function saveLog(data) {
  * @param {string} address - The contract address involved.
  * @param {string} txHash - The transaction hash.
  * @param {object} tx - The full transaction object from ethers.js.
+ * @param {object} hre - The Hardhat Runtime Environment.
  * @param {object} [extraData={}] - An optional object for additional metadata (e.g., mint amount).
  */
-async function logDeployment(name, address, txHash, tx, extraData = {}) {
+async function logDeployment(name, address, txHash, tx, hre, extraData = {}) {
     const data = loadLog();
     const explorer = `https://explorer.helioschainlabs.org/tx/${txHash}`;
     
@@ -61,7 +68,6 @@ async function logDeployment(name, address, txHash, tx, extraData = {}) {
         blockNumber = "N/A (pending or failed)";
         timestamp = new Date().toISOString();
     }
-
 
     data[name] = {
         address,
