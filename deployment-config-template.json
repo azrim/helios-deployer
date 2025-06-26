@@ -63,19 +63,21 @@
     },
     {
       "name": "HyperionQuery",
-      "args": [],
+      "args": ["deployerWallet"],
       "logName": "HyperionQuery",
       "interactions": [
         {
-            "type": "call",
-            "functionName": "performStructuredQuery",
-            "args": ["v2/history/get_actions", "{\"account\":\"helios.voter\"}"]
+          "type": "call",
+          "functionName": "performStructuredQuery",
+          "args": ["v2/history/get_actions", "{\"account\":\"helios.voter\"}"]
         }
       ]
     },
     {
       "name": "Heartbeat",
-      "args": ["deployerWallet"],
+      "args": [
+        "deployerWallet"
+      ],
       "logName": "Heartbeat",
       "interactions": [
         {
