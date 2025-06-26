@@ -23,11 +23,6 @@ async function deployContracts(logNameToDeploy, hre) {
 
     console.log("\n🚀 Starting automated deployment...");
 
-    if (config.deployerWallet === "your_wallet_address_here") {
-        console.error("❌ Please set your wallet address in deployment-config-template.json before running.");
-        process.exit(1);
-    }
-
     const [deployer] = await hre.ethers.getSigners();
     const wallets = {
         deployer: config.deployerWallet,
@@ -55,11 +50,14 @@ async function deployContracts(logNameToDeploy, hre) {
                 logKey = constructorArgs[0];
             }
             
-            const extraData = { 
+            // **FIX:** Explicitly build the entire object to be logged.
+            const deploymentData = {
+                address: contract.address,
                 logName: contractConfig.logName,
-                constructorArgs: constructorArgs
+                constructorArgs: constructorArgs,
             };
-            await logDeployment(logKey, contract.address, contract.deployTransaction.hash, contract.deployTransaction, hre);
+            
+            await logDeployment(logKey, deploymentData, contract.deployTransaction, hre);
 
             deployedContracts[contractConfig.name] = contract;
         } catch (error) {
