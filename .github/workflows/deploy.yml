@@ -1,0 +1,39 @@
+# .github/workflows/deploy.yml
+
+name: Scheduled Helios Deployment
+
+on:
+  # This schedule runs the workflow every 2 hours, resulting in 12 runs per day.
+  schedule:
+    - cron: '0 */2 * * *'
+  
+  # This allows you to run the workflow manually from the Actions tab on GitHub.
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Compile contracts
+        # This is a good practice to ensure artifacts are ready
+        run: npx hardhat compile
+
+      - name: Run Scheduled Deployment Logic
+        # This runs our new master script to decide which contract to deploy.
+        run: node scripts/run-scheduled-deployment.js
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          RPC_URL: ${{ secrets.RPC_URL }}
