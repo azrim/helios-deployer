@@ -3,7 +3,7 @@
 name: Scheduled Helios Deployment
 
 on:
-  # This schedule runs the workflow every 2 hours, resulting in 12 runs per day.
+  # This schedule runs the workflow every 2 hours.
   schedule:
     - cron: '0 */2 * * *'
   
@@ -13,6 +13,12 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    
+    # **FIX:** Define environment variables at the job level.
+    # This makes them available to all steps in this job.
+    env:
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      RPC_URL: ${{ secrets.RPC_URL }}
 
     steps:
       - name: Checkout repository
@@ -28,12 +34,9 @@ jobs:
         run: npm install
 
       - name: Compile contracts
-        # This is a good practice to ensure artifacts are ready
+        # This step will now have access to the secrets and will succeed.
         run: npx hardhat compile
 
       - name: Run Scheduled Deployment Logic
-        # This runs our new master script to decide which contract to deploy.
+        # This script also has access to the secrets, as before.
         run: node scripts/run-scheduled-deployment.js
-        env:
-          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-          RPC_URL: ${{ secrets.RPC_URL }}
