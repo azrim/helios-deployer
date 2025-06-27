@@ -3,25 +3,22 @@
 name: Scheduled Helios Deployment
 
 on:
-  # This schedule runs the workflow every 2 hours.
   schedule:
+    # This runs the workflow every 2 hours.
     - cron: '0 */2 * * *'
-  
-  # This allows you to run the workflow manually from the Actions tab on GitHub.
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     
-    # **FIX:** Define environment variables at the job level.
-    # This makes them available to all steps in this job.
     env:
       PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
       RPC_URL: ${{ secrets.RPC_URL }}
 
     steps:
       - name: Checkout repository
+        # This action checks out your repository code
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -34,9 +31,23 @@ jobs:
         run: npm install
 
       - name: Compile contracts
-        # This step will now have access to the secrets and will succeed.
         run: npx hardhat compile
 
       - name: Run Scheduled Deployment Logic
-        # This script also has access to the secrets, as before.
+        # This runs your script, which modifies deployments.json
         run: node scripts/run-scheduled-deployment.js
+
+      - name: Commit and Push changes
+        # This new step will commit deployments.json back to your repo
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          # Required: The commit message for the update
+          commit_message: "chore: Update deployment logs"
+          
+          # Optional: The file pattern to commit.
+          # We only want to commit changes to this specific file.
+          file_pattern: deployments.json
+          
+          # Optional: The user name and email to use for the commit
+          commit_user_name: GitHub Actions
+          commit_user_email: actions@github.com
